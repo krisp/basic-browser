@@ -14,10 +14,10 @@ ENV LD_LIBRARY_PATH $BASIC_DIR/_py/lib/python2.7/site-packages/extsds/
 # update and install basic utils
 RUN yum -y update
 RUN yum install -y epel-release wget gcc
-RUN yum group install -y "Development Tools"
+RUN yum groupinstall -y "Development Tools"
 RUN yum install -y python-devel python-setuptools python-pip
 RUN yum install -y automake
-RUN pip install --upgrade pip
+RUN pip install --upgrade pip==20.3.4
 RUN pip install virtualenv==16.7.10 
 RUN pip install pygments
 
@@ -40,9 +40,11 @@ RUN yum install -y pcre \
 # Install PCRE
 WORKDIR /tmp 
 RUN git clone https://github.com/swig/swig.git
-RUN cd /tmp/swig && wget ftp.pcre.org/pub/pcre/pcre-8.38.tar.gz && \
+WORKDIR /tmp/swig
+RUN git reset --hard efe5f181cf69975cf2fa1dcddefc29b93e4a6196
+RUN wget ftp.pcre.org/pub/pcre/pcre-8.38.tar.gz && \
     bash Tools/pcre-build.sh
-RUN cd /tmp/swig && ./autogen.sh && ./configure && make && make install
+RUN ./autogen.sh && ./configure && make && make install
 
 # Install Boost
 RUN yum install -y boost boost-devel \
